@@ -1,0 +1,24 @@
+#!/bin/sh
+
+#SBATCH --job-name=ds000008-fmriprep
+#SBATCH --mail-type=END
+#SBATCH --mail-user=jbwexler@tutanota.com
+#SBATCH --output=/scratch1/03201/jbwexler/openneuro_derivatives/derivatives/fmriprep/ds000008-fmriprep/.reproman/jobs/local/20220707-144504-a029/stdout
+#SBATCH --error=/scratch1/03201/jbwexler/openneuro_derivatives/derivatives/fmriprep/ds000008-fmriprep/.reproman/jobs/local/20220707-144504-a029/stderr
+
+#SBATCH --nodes=4
+#SBATCH --ntasks=14
+#SBATCH --time=48:00:00
+#SBATCH --partition=normal
+
+metadir=/scratch1/03201/jbwexler/openneuro_derivatives/derivatives/fmriprep/ds000008-fmriprep/.reproman/jobs/local/20220707-144504-a029
+
+module load launcher
+export LAUNCHER_JOB_FILE="$metadir/launcher"
+
+for task_id in $(seq 0 13); do
+    printf "$metadir/runscript %d >$metadir/stdout.%d 2>$metadir/stderr.%d\n" \
+      "$task_id" "$task_id" "$task_id" >>"$LAUNCHER_JOB_FILE"
+done
+
+"$LAUNCHER_DIR"/paramrun
